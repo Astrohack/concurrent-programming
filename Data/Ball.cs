@@ -18,11 +18,13 @@
 
     public IVector Velocity { get; set; }
 
+    public IVector Position { get; private set; }
+
+    public double Radius { get; } = 0.5;
+
     #endregion IBall
 
     #region private
-
-    private Vector Position;
 
     private void RaiseNewPositionChangeNotification()
     {
@@ -32,6 +34,13 @@
     internal void Move(Vector delta)
     {
       Position = new Vector(Position.x + delta.x, Position.y + delta.y);
+
+      RaiseNewPositionChangeNotification();
+    }
+
+    public void SetPosition(IVector pos)
+    {
+      Position = new Vector(pos.x, pos.y);
       RaiseNewPositionChangeNotification();
     }
 

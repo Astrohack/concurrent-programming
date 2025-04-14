@@ -47,6 +47,12 @@
   {
     event EventHandler<IVector> NewPositionNotification;
 
+    double Radius { get; }
+
+    IVector Position { get; }
+
+    void SetPosition(IVector pos);
+
     IVector Velocity { get; set; }
   }
 }

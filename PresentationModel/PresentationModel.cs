@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Reactive;
 using System.Reactive.Linq;
+using TP.ConcurrentProgramming.BusinessLogic;
 using UnderneathLayerAPI = TP.ConcurrentProgramming.BusinessLogic.BusinessLogicAbstractAPI;
 
 namespace TP.ConcurrentProgramming.Presentation.Model
@@ -35,8 +36,13 @@ namespace TP.ConcurrentProgramming.Presentation.Model
       return eventObservable.Subscribe(x => observer.OnNext(x.EventArgs.Ball), ex => observer.OnError(ex), () => observer.OnCompleted());
     }
 
-    public override void Start(int numberOfBalls)
+    private double tableWidth { get; set; }
+    private double tableHeight { get; set; }
+
+    public override void Start(int numberOfBalls, double canvasWidth, double canvasHeight)
     {
+      tableHeight = canvasHeight;
+      tableWidth = canvasWidth;
       layerBellow.Start(numberOfBalls, StartHandler);
     }
 
@@ -51,12 +57,15 @@ namespace TP.ConcurrentProgramming.Presentation.Model
     #region private
 
     private bool Disposed = false;
+   
     private readonly IObservable<EventPattern<BallChaneEventArgs>> eventObservable = null;
     private readonly UnderneathLayerAPI layerBellow = null;
 
     private void StartHandler(BusinessLogic.IPosition position, BusinessLogic.IBall ball)
     {
-      ModelBall newBall = new ModelBall(position.x, position.y, ball) { Diameter = 20.0 };
+      double diameter = tableHeight / UnderneathLayerAPI.GetDimensions.TableHeight * ball.Radius * 2;
+      double scale = (tableWidth - 2 * 5) / UnderneathLayerAPI.GetDimensions.TableHeight;
+      ModelBall newBall = new ModelBall(position.x, position.y, ball) { Diameter = diameter };
       BallChanged.Invoke(this, new BallChaneEventArgs() { Ball = newBall });
     }
 

@@ -2,7 +2,9 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using TP.ConcurrentProgramming.BusinessLogic;
+using TP.ConcurrentProgramming.Data;
 using LogicIBall = TP.ConcurrentProgramming.BusinessLogic.IBall;
+using BusinessLogicAbstractAPI = TP.ConcurrentProgramming.BusinessLogic.BusinessLogicAbstractAPI;
 
 namespace TP.ConcurrentProgramming.Presentation.Model
 {
@@ -13,6 +15,7 @@ namespace TP.ConcurrentProgramming.Presentation.Model
       TopBackingField = top;
       LeftBackingField = left;
       underneathBall.NewPositionNotification += NewPositionNotification;
+      logicBall = underneathBall;
     }
 
     #region IBall
@@ -55,10 +58,14 @@ namespace TP.ConcurrentProgramming.Presentation.Model
 
     private double TopBackingField;
     private double LeftBackingField;
+    private LogicIBall logicBall;
 
     private void NewPositionNotification(object sender, IPosition e)
     {
-      Top = e.y; Left = e.x;
+      double radius = Diameter / 2;
+      double scale = radius / logicBall.Radius;
+      Top = e.y * scale - radius;
+      Left = e.x * scale - radius;
     }
 
     private void RaisePropertyChanged([CallerMemberName] string propertyName = "")

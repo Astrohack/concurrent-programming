@@ -18,14 +18,44 @@ namespace TP.ConcurrentProgramming.PresentationView
   /// </summary>
   public partial class MainWindow : Window
   {
+
+    private int BallsQuantity = 30;
+
     public MainWindow()
     {
-      Random random = new Random();
       InitializeComponent();
-      MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
       double screenWidth = SystemParameters.PrimaryScreenWidth;
       double screenHeight = SystemParameters.PrimaryScreenHeight;
-      viewModel.Start(random.Next(5, 10));
+      TableBorder.Height = screenHeight * 0.6;
+      TableBorder.Width = TableBorder.Height;
+      BallsQuantityTextBlock.Text = BallsQuantity.ToString();
+    }
+
+    private void Increment_Click(object sender, RoutedEventArgs e)
+    {
+      BallsQuantity++;
+      BallsQuantityTextBlock.Text = BallsQuantity.ToString();
+      DecrementBallsBtn.IsEnabled = true;
+    }
+
+    private void Decrement_Click(object sender, RoutedEventArgs e)
+    {
+      if (BallsQuantity <= 1) return;
+      BallsQuantity--;
+      BallsQuantityTextBlock.Text = BallsQuantity.ToString();
+      if (BallsQuantity == 1)
+      {
+        DecrementBallsBtn.IsEnabled = false;
+      }
+    }
+
+    private void GenerateBalls_Click(object sender, RoutedEventArgs e)
+    {
+      MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
+      double width = Canvas.ActualWidth;
+      double height = Canvas.ActualHeight;
+      viewModel.Start(BallsQuantity, width, height);
+      GenerateBallsBtn.IsEnabled = false;
     }
 
     /// <summary>
