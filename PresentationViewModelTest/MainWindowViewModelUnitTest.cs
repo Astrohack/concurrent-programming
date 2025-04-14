@@ -22,7 +22,7 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel.Test
       {
         Random random = new Random();
         int numberOfBalls = random.Next(1, 10);
-        viewModel.Start(numberOfBalls);
+        viewModel.Start(numberOfBalls, 100, 100);
         Assert.IsNotNull(viewModel.Balls);
         Assert.AreEqual<int>(0, nullModelFixture.Disposed);
         Assert.AreEqual<int>(numberOfBalls, nullModelFixture.Started);
@@ -40,7 +40,7 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel.Test
       Assert.AreEqual<int>(0, viewModel.Balls.Count);
       Random random = new Random();
       int numberOfBalls = random.Next(1, 10);
-      viewModel.Start(numberOfBalls);
+      viewModel.Start(numberOfBalls, 100, 100);
       Assert.AreEqual<int>(numberOfBalls, viewModel.Balls.Count);
       viewModel.Dispose();
       Assert.IsTrue(modelSimulator.Disposed);
@@ -66,7 +66,7 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel.Test
         Disposed++;
       }
 
-      public override void Start(int numberOfBalls)
+      public override void Start(int numberOfBalls, double canvasWidth, double canvasHeight)
       {
         Started = numberOfBalls;
       }
@@ -114,7 +114,7 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel.Test
         return eventObservable?.Subscribe(x => observer.OnNext(x.EventArgs.Ball), ex => observer.OnError(ex), () => observer.OnCompleted());
       }
 
-      public override void Start(int numberOfBalls)
+      public override void Start(int numberOfBalls, double canvasWidth, double canvasHeight)
       {
         for (int i = 0; i < numberOfBalls; i++)
         {

@@ -1,6 +1,8 @@
-﻿namespace TP.ConcurrentProgramming.BusinessLogic
+﻿using TP.ConcurrentProgramming.Data;
+
+namespace TP.ConcurrentProgramming.BusinessLogic
 {
-  internal record Position : IPosition
+  internal record Position : IPosition, IVector
   {
     #region IPosition
 

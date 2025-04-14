@@ -13,7 +13,7 @@
 
     #region Layer API
 
-    public static readonly Dimensions GetDimensions = new(10.0, 10.0, 10.0);
+    public static readonly Dimensions GetDimensions = new(1.0, 20.0, 20.0);
 
     public abstract void Start(int numberOfBalls, Action<IPosition, IBall> upperLayerHandler);
 
@@ -51,5 +51,7 @@
   public interface IBall 
   {
     event EventHandler<IPosition> NewPositionNotification;
+
+    double Radius { get; }
   }
 }
