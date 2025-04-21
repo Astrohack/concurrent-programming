@@ -7,10 +7,8 @@ namespace TP.ConcurrentProgramming.Data
   {
     #region ctor
 
-    public DataImplementation() 
-    {
-      MoveTimer = new Timer((a) => {}, null, TimeSpan.Zero, TimeSpan.Zero);
-    }
+    public DataImplementation() {}
+
 
     #endregion ctor
 
@@ -25,12 +23,24 @@ namespace TP.ConcurrentProgramming.Data
       Random random = new Random();
       for (int i = 0; i < numberOfBalls; i++)
       {
-        Vector startingPosition = new(10,10);
-        Ball newBall = new(startingPosition, startingPosition);
+        Vector startingPosition = new(random.NextDouble() * 19 + 0.5, random.NextDouble() * 19 + 0.5);
+
+        double direction = random.NextDouble() * 2 * Math.PI;
+        double speed = 0.1;
+        Vector startingVelocity = new(Math.Cos(direction) * speed, Math.Sin(direction) * speed);
+        double radius = random.NextDouble() * 0.5 + 0.5;
+        Ball newBall = new(startingPosition, startingVelocity) { Radius = radius };
         upperLayerHandler(startingPosition, newBall);
         BallsList.Add(newBall);
       }
-      MoveTimer = new Timer(Move, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(10));
+      foreach (IBall ball in BallsList)
+      {
+        ball.StartMoving();
+      }
+    }
+    public override List<IBall> GetBalls()
+    {
+      return BallsList;
     }
 
     #endregion DataAbstractAPI
@@ -43,7 +53,6 @@ namespace TP.ConcurrentProgramming.Data
       {
         if (disposing)
         {
-          MoveTimer.Dispose();
           BallsList.Clear();
         }
         Disposed = true;
@@ -65,20 +74,8 @@ namespace TP.ConcurrentProgramming.Data
 
     private bool Disposed = false;
 
-    private Timer MoveTimer;
-    private Random RandomGenerator = new();
-    private List<Ball> BallsList = [];
-
-    private void Move(object? x)
-    {
-      foreach (Ball item in BallsList)
-      { 
-        var xMov = (RandomGenerator.NextDouble() - 0.5) * 0.5;
-        var yMov = (RandomGenerator.NextDouble() - 0.5) * 0.5;
-        item.Move(new Vector(xMov, yMov));
-      }
-    }
-
+    private List<IBall> BallsList = [];
+  
     #endregion private
 
     #region TestingInfrastructure
@@ -100,6 +97,7 @@ namespace TP.ConcurrentProgramming.Data
     {
       returnInstanceDisposed(Disposed);
     }
+
 
     #endregion TestingInfrastructure
   }

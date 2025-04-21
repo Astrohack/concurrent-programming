@@ -1,4 +1,5 @@
 ﻿using TP.ConcurrentProgramming.BusinessLogic;
+using TP.ConcurrentProgramming.Data;
 
 namespace TP.ConcurrentProgramming.Presentation.Model.Test
 {
@@ -64,6 +65,21 @@ namespace TP.ConcurrentProgramming.Presentation.Model.Test
 
       public double x { get; init; }
       public double y { get; init; }
+
+      public double Magnitude()
+      {
+        throw new NotImplementedException();
+      }
+
+      public double MagnitudeSquared()
+      {
+        throw new NotImplementedException();
+      }
+
+      public IVector Normalize()
+      {
+        throw new NotImplementedException();
+      }
     }
 
     #endregion testing instrumentation

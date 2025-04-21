@@ -26,5 +26,14 @@
       x = XComponent;
       y = YComponent;
     }
+
+    public double MagnitudeSquared() => x * x + y * y;
+    public double Magnitude() => Math.Sqrt(MagnitudeSquared());
+
+    public IVector Normalize()
+    {
+      double mag = Magnitude();
+      return mag == 0 ? new Vector(0, 0) : new Vector(x / mag, y / mag);
+    }
   }
 }

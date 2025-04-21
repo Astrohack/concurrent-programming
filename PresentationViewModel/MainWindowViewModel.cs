@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Windows.Input;
 using TP.ConcurrentProgramming.Presentation.Model;
 using TP.ConcurrentProgramming.Presentation.ViewModel.MVVMLight;
 using ModelIBall = TP.ConcurrentProgramming.Presentation.Model.IBall;
@@ -17,19 +21,42 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
     {
       ModelLayer = modelLayerAPI == null ? ModelAbstractApi.CreateModel() : modelLayerAPI;
       Observer = ModelLayer.Subscribe<ModelIBall>(x => Balls.Add(x));
+
+      StartSimulation = new RelayCommand(ExecuteStartSimulation, CanStartSimulation);
+      IncreaseBallsQuantity = new RelayCommand(ExecuteIncreaseBallsQuantity, CanIncreaseBallsQuantity);
+      DecreaseBallsQuantity = new RelayCommand(ExecuteDecreaseBallsQuantity, CanDecreaseBallsQuantity);
     }
 
     #endregion ctor
 
     #region public API
 
-    public void Start(int numberOfBalls, double canvasWidth, double canvasHeight)
+    private int _ballsQuantity = 15;
+    private bool canStartSimulation = true;
+    private double canvasWidth;
+    private double canvasHeight;
+    public string BallsQunatityLabel
+    {
+      get => _ballsQuantity.ToString();
+      set
+      {
+        _ballsQuantity = int.Parse(value);
+        RaisePropertyChanged();
+      }
+    }
+
+    public ICommand StartSimulation { get; }
+    public ICommand IncreaseBallsQuantity { get; }
+    public ICommand DecreaseBallsQuantity { get; }
+
+    public void Start(double canvasWidth, double canvasHeight)
     {
       if (Disposed)
         throw new ObjectDisposedException(nameof(MainWindowViewModel));
-      ModelLayer.Start(numberOfBalls, canvasWidth, canvasHeight);
-      Observer.Dispose();
+      this.canvasWidth = canvasWidth;
+      this.canvasHeight = canvasHeight;
     }
+
 
     public ObservableCollection<ModelIBall> Balls { get; } = new ObservableCollection<ModelIBall>();
 
@@ -69,6 +96,34 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
     private IDisposable Observer = null;
     private ModelAbstractApi ModelLayer;
     private bool Disposed = false;
+    private void ExecuteStartSimulation()
+    {
+      ModelLayer.Start(_ballsQuantity, canvasWidth, canvasHeight);
+      Observer.Dispose();
+      canStartSimulation = false;
+      (StartSimulation as RelayCommand)?.RaiseCanExecuteChanged();
+    }
+
+    private bool CanStartSimulation()
+    {
+      return canStartSimulation;
+    }
+    private void ExecuteIncreaseBallsQuantity()
+    {
+      _ballsQuantity++;
+      BallsQunatityLabel = _ballsQuantity.ToString();
+      (IncreaseBallsQuantity as RelayCommand)?.RaiseCanExecuteChanged();
+      (DecreaseBallsQuantity as RelayCommand)?.RaiseCanExecuteChanged();
+    }
+    private bool CanIncreaseBallsQuantity() => _ballsQuantity < 20;
+    private void ExecuteDecreaseBallsQuantity()
+    {
+      _ballsQuantity--;
+      BallsQunatityLabel = _ballsQuantity.ToString();
+      (DecreaseBallsQuantity as RelayCommand)?.RaiseCanExecuteChanged();
+      (IncreaseBallsQuantity as RelayCommand)?.RaiseCanExecuteChanged();
+    }
+    private bool CanDecreaseBallsQuantity() => _ballsQuantity > 0;
 
     #endregion private
   }

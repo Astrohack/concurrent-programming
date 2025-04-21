@@ -57,6 +57,11 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
       public override void Dispose()
       { }
 
+      public override List<Data.IBall> GetBalls()
+      {
+        throw new NotImplementedException();
+      }
+
       public override void Start(int numberOfBalls, Action<IVector, Data.IBall> upperLayerHandler)
       {
         throw new NotImplementedException();
@@ -70,6 +75,11 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
       public override void Dispose()
       {
         Disposed = true;
+      }
+
+      public override List<Data.IBall> GetBalls()
+      {
+        throw new NotImplementedException();
       }
 
       public override void Start(int numberOfBalls, Action<IVector, Data.IBall> upperLayerHandler)
@@ -93,10 +103,30 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
         upperLayerHandler(new DataVectorFixture(), new DataBallFixture());
       }
 
+      public override List<Data.IBall> GetBalls()
+      {
+        throw new NotImplementedException();
+      }
+
       private record DataVectorFixture : Data.IVector
       {
         public double x { get; init; }
         public double y { get; init; }
+
+        public double Magnitude()
+        {
+          throw new NotImplementedException();
+        }
+
+        public double MagnitudeSquared()
+        {
+          throw new NotImplementedException();
+        }
+
+        public IVector Normalize()
+        {
+          throw new NotImplementedException();
+        }
       }
 
       private class DataBallFixture : Data.IBall
@@ -107,9 +137,21 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
 
         public IVector Position => throw new NotImplementedException();
 
+        public double Mass => throw new NotImplementedException();
+
         public event EventHandler<IVector>? NewPositionNotification = null;
 
+        public object AcquireLock()
+        {
+          throw new NotImplementedException();
+        }
+
         public void SetPosition(IVector pos)
+        {
+          throw new NotImplementedException();
+        }
+
+        public void StartMoving()
         {
           throw new NotImplementedException();
         }

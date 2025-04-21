@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:TP.ConcurrentProgramming.Presentation.ViewModel;assembly=TP.ConcurrentProgramming.PresentationViewModel"
         mc:Ignorable="d"
-        Title="Presentation layer targeting reactive behaviour" Height="auto" Width="auto">
+        Title="Presentation layer targeting reactive behaviour" Height="auto" Width="auto" SizeToContent="WidthAndHeight">
     <Window.DataContext>
         <vm:MainWindowViewModel />
     </Window.DataContext>
@@ -13,12 +13,9 @@
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <!-- UI kontrolki -->
             <RowDefinition Height="*"/>
-            <!-- Canvas -->
         </Grid.RowDefinitions>
 
-        <!-- Panel z +, -, TextBlock i Generate Balls -->
         <Grid Grid.Row="1" Height="40" Width="400" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -27,15 +24,14 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" Content="-" Width="40" x:Name="DecrementBallsBtn" Click="Decrement_Click" Height="40"/>
-            <TextBlock x:Name="BallsQuantityTextBlock" Grid.Column="1" Text="1" 
+            <Button Grid.Column="0" Command="{Binding DecreaseBallsQuantity}" Content="-" Width="40" Height="40"/>
+            <TextBlock Grid.Column="1" Text="{Binding BallsQunatityLabel, UpdateSourceTrigger=PropertyChanged}"
                        FontSize="16" VerticalAlignment="Center" 
                        HorizontalAlignment="Center" Margin="10"/>
-            <Button Grid.Column="2" Content="+" Width="40" x:Name="IncrementBallsBtn" Click="Increment_Click" Height="40"/>
-            <Button Grid.Column="3" Content="Generate Balls" x:Name="GenerateBallsBtn" Click="GenerateBalls_Click"/>
+            <Button Grid.Column="2" Command="{Binding IncreaseBallsQuantity}" Content="+" Width="40" Height="40"/>
+            <Button Grid.Column="3" Command="{Binding StartSimulation}" Content="Generate Balls" />
         </Grid>
 
-        <!-- Border z Canvasem -->
         <Border x:Name="TableBorder" BorderThickness="5" BorderBrush="Green">
             <ItemsControl x:Name="Canvas" ItemsSource="{Binding Balls}">
                 <ItemsControl.ItemsPanel>

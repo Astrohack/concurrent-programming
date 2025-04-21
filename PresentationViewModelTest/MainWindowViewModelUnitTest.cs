@@ -21,11 +21,9 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel.Test
       using (MainWindowViewModel viewModel = new(nullModelFixture))
       {
         Random random = new Random();
-        int numberOfBalls = random.Next(1, 10);
-        viewModel.Start(numberOfBalls, 100, 100);
+        viewModel.Start(100, 100);
         Assert.IsNotNull(viewModel.Balls);
         Assert.AreEqual<int>(0, nullModelFixture.Disposed);
-        Assert.AreEqual<int>(numberOfBalls, nullModelFixture.Started);
         Assert.AreEqual<int>(1, nullModelFixture.Subscribed);
       }
       Assert.AreEqual<int>(1, nullModelFixture.Disposed);
@@ -39,12 +37,112 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel.Test
       Assert.IsNotNull(viewModel.Balls);
       Assert.AreEqual<int>(0, viewModel.Balls.Count);
       Random random = new Random();
-      int numberOfBalls = random.Next(1, 10);
-      viewModel.Start(numberOfBalls, 100, 100);
-      Assert.AreEqual<int>(numberOfBalls, viewModel.Balls.Count);
+      viewModel.Start(100, 100);
       viewModel.Dispose();
       Assert.IsTrue(modelSimulator.Disposed);
       Assert.AreEqual<int>(0, viewModel.Balls.Count);
+    }
+
+    private class FakeModelApi : ModelAbstractApi
+    {
+      public bool Started { get; private set; }
+      public int StartBalls { get; private set; }
+      public double StartWidth { get; private set; }
+      public double StartHeight { get; private set; }
+      public int SubscribeCount { get; private set; }
+
+      public override void Start(int balls, double width, double height)
+      {
+        Started = true;
+        StartBalls = balls;
+        StartWidth = width;
+        StartHeight = height;
+      }
+
+      public override void Dispose() { }
+
+      public override IDisposable Subscribe(IObserver<ModelIBall> observer)
+      {
+        SubscribeCount++;
+        return new DummyDisposable();
+      }
+
+      private class DummyDisposable : IDisposable
+      {
+        public void Dispose() { }
+      }
+    }
+
+    [TestMethod]
+    public void Constructor_InitializesCommandsAndProperties()
+    {
+      var api = new FakeModelApi();
+      var vm = new MainWindowViewModel(api);
+
+      // Initial label
+      Assert.AreEqual("15", vm.BallsQunatityLabel);
+      // Commands should be available
+      Assert.IsTrue(vm.IncreaseBallsQuantity.CanExecute(null));
+      Assert.IsTrue(vm.DecreaseBallsQuantity.CanExecute(null));
+      Assert.IsTrue(vm.StartSimulation.CanExecute(null));
+      // Subscribe should have been called once
+      Assert.AreEqual(1, api.SubscribeCount);
+    }
+
+    [TestMethod]
+    public void IncreaseBallsQuantity_ExecutesAndUpdatesLabelAndCanExecute()
+    {
+      var api = new FakeModelApi();
+      var vm = new MainWindowViewModel(api);
+
+      // Increase up to limit
+      for (int i = 0; i < 5; i++)
+      {
+        Assert.IsTrue(vm.IncreaseBallsQuantity.CanExecute(null));
+        vm.IncreaseBallsQuantity.Execute(null);
+      }
+      Assert.AreEqual("20", vm.BallsQunatityLabel);
+      // Now at max, cannot increase
+      Assert.IsFalse(vm.IncreaseBallsQuantity.CanExecute(null));
+      Assert.IsTrue(vm.DecreaseBallsQuantity.CanExecute(null));
+    }
+
+    [TestMethod]
+    public void DecreaseBallsQuantity_ExecutesAndUpdatesLabelAndCanExecute()
+    {
+      var api = new FakeModelApi();
+      var vm = new MainWindowViewModel(api);
+
+      // Decrease down to zero
+      for (int i = 0; i < 15; i++)
+      {
+        Assert.IsTrue(vm.DecreaseBallsQuantity.CanExecute(null));
+        vm.DecreaseBallsQuantity.Execute(null);
+      }
+      Assert.AreEqual("0", vm.BallsQunatityLabel);
+      // Now at min, cannot decrease
+      Assert.IsFalse(vm.DecreaseBallsQuantity.CanExecute(null));
+      Assert.IsTrue(vm.IncreaseBallsQuantity.CanExecute(null));
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ObjectDisposedException))]
+    public void Start_AfterDispose_ThrowsObjectDisposedException()
+    {
+      var api = new FakeModelApi();
+      var vm = new MainWindowViewModel(api);
+      vm.Dispose();
+      vm.Start(10, 10);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ObjectDisposedException))]
+    public void Dispose_Twice_ThrowsObjectDisposedException()
+    {
+      var api = new FakeModelApi();
+      var vm = new MainWindowViewModel(api);
+      vm.Dispose();
+      vm.Dispose();
     }
 
     #region testing infrastructure

@@ -14,6 +14,7 @@
     #region public API
 
     public abstract void Start(int numberOfBalls, Action<IVector, IBall> upperLayerHandler);
+    public abstract List<IBall> GetBalls();
 
     #endregion public API
 
@@ -41,17 +42,46 @@
     /// The y component of the vector.
     /// </summary>
     double y { get; init; }
+
+    public static IVector Right = new Vector(1,0);
+    public static IVector Left = new Vector(-1,0);
+    public static IVector Up = new Vector(0,1);
+    public static IVector Down = new Vector(0,-1);
+
+    public static IVector operator +(IVector a, IVector b) =>
+        new Vector(a.x + b.x, a.y + b.y);
+
+    public static IVector operator -(IVector a, IVector b) =>
+        new Vector(a.x - b.x, a.y - b.y);
+
+    public static IVector operator *(IVector v, double scalar) =>
+        new Vector(v.x * scalar, v.y * scalar);
+
+    public static IVector operator /(IVector v, double scalar) =>
+     new Vector(v.x / scalar, v.y / scalar);
+
+    public static double Dot(IVector a, IVector b) =>
+        a.x * b.x + a.y * b.y;
+
+    public IVector Normalize();
+
+    public double Magnitude();
+
+    public double MagnitudeSquared();
   }
 
   public interface IBall
   {
     event EventHandler<IVector> NewPositionNotification;
 
+    void StartMoving();
+
+    object AcquireLock();
+
     double Radius { get; }
+    double Mass { get; }
 
     IVector Position { get; }
-
-    void SetPosition(IVector pos);
 
     IVector Velocity { get; set; }
   }

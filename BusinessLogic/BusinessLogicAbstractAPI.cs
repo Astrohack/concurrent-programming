@@ -1,4 +1,6 @@
-﻿namespace TP.ConcurrentProgramming.BusinessLogic
+﻿using TP.ConcurrentProgramming.Data;
+
+namespace TP.ConcurrentProgramming.BusinessLogic
 {
   public abstract class BusinessLogicAbstractAPI : IDisposable
   {
@@ -13,7 +15,7 @@
 
     #region Layer API
 
-    public static readonly Dimensions GetDimensions = new(1.0, 20.0, 20.0);
+    public static readonly Dimensions GetDimensions = new(0.0, 20.0, 20.0);
 
     public abstract void Start(int numberOfBalls, Action<IPosition, IBall> upperLayerHandler);
 
@@ -42,7 +44,7 @@
   /// </remarks>
   public record Dimensions(double BallDimension, double TableHeight, double TableWidth);
 
-  public interface IPosition
+  public interface IPosition: IVector
   {
     double x { get; init; }
     double y { get; init; }

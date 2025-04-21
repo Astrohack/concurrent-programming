@@ -9,6 +9,7 @@
 
 using System;
 using System.Windows;
+using System.Windows.Media.Media3D;
 using TP.ConcurrentProgramming.Presentation.ViewModel;
 
 namespace TP.ConcurrentProgramming.PresentationView
@@ -18,45 +19,23 @@ namespace TP.ConcurrentProgramming.PresentationView
   /// </summary>
   public partial class MainWindow : Window
   {
-
-    private int BallsQuantity = 30;
-
     public MainWindow()
     {
       InitializeComponent();
       double screenWidth = SystemParameters.PrimaryScreenWidth;
       double screenHeight = SystemParameters.PrimaryScreenHeight;
-      TableBorder.Height = screenHeight * 0.6;
+      TableBorder.Height = Math.Min(screenWidth, screenHeight) * 0.7;
       TableBorder.Width = TableBorder.Height;
-      BallsQuantityTextBlock.Text = BallsQuantity.ToString();
-    }
 
-    private void Increment_Click(object sender, RoutedEventArgs e)
-    {
-      BallsQuantity++;
-      BallsQuantityTextBlock.Text = BallsQuantity.ToString();
-      DecrementBallsBtn.IsEnabled = true;
-    }
-
-    private void Decrement_Click(object sender, RoutedEventArgs e)
-    {
-      if (BallsQuantity <= 1) return;
-      BallsQuantity--;
-      BallsQuantityTextBlock.Text = BallsQuantity.ToString();
-      if (BallsQuantity == 1)
+      Loaded += (s, e) =>
       {
-        DecrementBallsBtn.IsEnabled = false;
-      }
+        double width = Canvas.ActualWidth;
+        double height = Canvas.ActualHeight;
+        MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
+        viewModel.Start(width, height);
+      };
     }
 
-    private void GenerateBalls_Click(object sender, RoutedEventArgs e)
-    {
-      MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
-      double width = Canvas.ActualWidth;
-      double height = Canvas.ActualHeight;
-      viewModel.Start(BallsQuantity, width, height);
-      GenerateBallsBtn.IsEnabled = false;
-    }
 
     /// <summary>
     /// Raises the <seealso cref="System.Windows.Window.Closed"/> event.
