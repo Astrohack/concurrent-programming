@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Numerics;
 using Newtonsoft.Json.Linq;
@@ -16,7 +17,7 @@ namespace TP.ConcurrentProgramming.BusinessLogic
       this.getBalls = getBalls;
     }
 
-    public delegate List<Data.IBall> GetBallsFn();
+    public delegate ReadOnlyCollection<Data.IBall> GetBallsFn();
 
     #region IBall
 
@@ -41,13 +42,12 @@ namespace TP.ConcurrentProgramming.BusinessLogic
         foreach (Data.IBall other in balls)
         {
           if (other == ball) continue;
-          lock (other.AcquireLock())
-          lock (ball.AcquireLock()) {
+          lock (other.AcquireLock()) {
             CalculateBallCollisions(ball, other);
           }
         }
+        CalculateWallCollisions(ball);
       }
-      CalculateWallCollisions(ball);
       NewPositionNotification?.Invoke(this, new Position(e.x, e.y));
     }
 

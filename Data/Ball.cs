@@ -102,15 +102,17 @@ namespace TP.ConcurrentProgramming.Data
         float currentTime = stopwatch.ElapsedMilliseconds;
         float delta = currentTime - startingTime;
 
-        if (delta >= 1f / 60f)
+        double span = 0;
+        if (delta >= span)
         {
           lock(_lock)
           {
-            Position = new Vector(Position.x + Velocity.x, Position.y + Velocity.y);
+            Position = new Vector(Position.x + Velocity.x * delta, Position.y + Velocity.y * delta);
+            span = 1f / (Velocity.Magnitude() * 50_000 + 1e-4);
           }
           RaiseNewPositionChangeNotification();
           startingTime = currentTime;
-          await Task.Delay(TimeSpan.FromSeconds(1f / 60f));
+          await Task.Delay(TimeSpan.FromSeconds(span));
         }
       }
     }

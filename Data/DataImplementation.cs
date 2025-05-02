@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 
 namespace TP.ConcurrentProgramming.Data
@@ -26,7 +27,7 @@ namespace TP.ConcurrentProgramming.Data
         Vector startingPosition = new(random.NextDouble() * 19 + 0.5, random.NextDouble() * 19 + 0.5);
 
         double direction = random.NextDouble() * 2 * Math.PI;
-        double speed = 0.1;
+        double speed = 0.005;
         Vector startingVelocity = new(Math.Cos(direction) * speed, Math.Sin(direction) * speed);
         double radius = random.NextDouble() * 0.5 + 0.5;
         Ball newBall = new(startingPosition, startingVelocity) { Radius = radius };
@@ -38,9 +39,9 @@ namespace TP.ConcurrentProgramming.Data
         ball.StartMoving();
       }
     }
-    public override List<IBall> GetBalls()
+    public override ReadOnlyCollection<IBall> GetBalls()
     {
-      return BallsList;
+      return BallsList.AsReadOnly();
     }
 
     #endregion DataAbstractAPI

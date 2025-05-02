@@ -80,7 +80,7 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
     }
     private BusinessLogic.Ball CreateLogicBall(StubDataBall stub)
     {
-      var logic = new BusinessLogic.Ball(stub, () => dataBalls);
+      var logic = new BusinessLogic.Ball(stub, () => dataBalls.AsReadOnly());
       dataBalls.Add(stub);
       logicBalls.Add(logic);
       return logic;

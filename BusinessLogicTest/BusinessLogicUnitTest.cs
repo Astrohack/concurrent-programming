@@ -1,4 +1,5 @@
-﻿using TP.ConcurrentProgramming.Data;
+﻿using System.Collections.ObjectModel;
+using TP.ConcurrentProgramming.Data;
 
 namespace TP.ConcurrentProgramming.BusinessLogic.Test
 {
@@ -57,7 +58,7 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
       public override void Dispose()
       { }
 
-      public override List<Data.IBall> GetBalls()
+      public override ReadOnlyCollection<Data.IBall> GetBalls()
       {
         throw new NotImplementedException();
       }
@@ -77,7 +78,7 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
         Disposed = true;
       }
 
-      public override List<Data.IBall> GetBalls()
+      public override ReadOnlyCollection<Data.IBall> GetBalls()
       {
         throw new NotImplementedException();
       }
@@ -103,7 +104,7 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
         upperLayerHandler(new DataVectorFixture(), new DataBallFixture());
       }
 
-      public override List<Data.IBall> GetBalls()
+      public override ReadOnlyCollection<Data.IBall> GetBalls()
       {
         throw new NotImplementedException();
       }

@@ -1,4 +1,6 @@
-﻿namespace TP.ConcurrentProgramming.Data
+﻿using System.Collections.ObjectModel;
+
+namespace TP.ConcurrentProgramming.Data
 {
   public abstract class DataAbstractAPI : IDisposable
   {
@@ -14,7 +16,7 @@
     #region public API
 
     public abstract void Start(int numberOfBalls, Action<IVector, IBall> upperLayerHandler);
-    public abstract List<IBall> GetBalls();
+    public abstract ReadOnlyCollection<IBall> GetBalls();
 
     #endregion public API
 
