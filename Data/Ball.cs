@@ -86,6 +86,7 @@ namespace TP.ConcurrentProgramming.Data
     {
       if (_isBallMoverRunning) return;
       Thread thread = new Thread(Move);
+      thread.IsBackground = true;
       _isBallMoverRunning = true;
       thread.Start();
     }
@@ -95,31 +96,28 @@ namespace TP.ConcurrentProgramming.Data
       Stopwatch stopwatch = new();
       stopwatch.Start();
       float startingTime = 0f;
-      
+      float frameDuration = 1f / 100f;
 
       while (_isBallMoverRunning)
       {
         float currentTime = stopwatch.ElapsedMilliseconds;
         float delta = currentTime - startingTime;
 
-        if (delta >= 1f / 60f)
+        if (delta >= frameDuration)
         {
-          lock(_lock)
-          {
-            Position = new Vector(Position.x + Velocity.x, Position.y + Velocity.y);
-          }
+          var vel = Velocity;
+          Position = new Vector(Position.x + vel.x * delta, Position.y + vel.y * delta);
           RaiseNewPositionChangeNotification();
           startingTime = currentTime;
-          await Task.Delay(TimeSpan.FromSeconds(1f / 60f));
+          await Task.Delay(TimeSpan.FromSeconds(frameDuration));
         }
       }
     }
 
-    public object AcquireLock()
+    public void SetVelocity(double x, double y)
     {
-      return _lock;
+      Velocity = new Vector(x, y);
     }
-
     #endregion private
   }
 }

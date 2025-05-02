@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 
 namespace TP.ConcurrentProgramming.Data
@@ -20,15 +21,15 @@ namespace TP.ConcurrentProgramming.Data
         throw new ObjectDisposedException(nameof(DataImplementation));
       if (upperLayerHandler == null)
         throw new ArgumentNullException(nameof(upperLayerHandler));
-      Random random = new Random();
+      Random random = new();
       for (int i = 0; i < numberOfBalls; i++)
       {
         Vector startingPosition = new(random.NextDouble() * 19 + 0.5, random.NextDouble() * 19 + 0.5);
 
         double direction = random.NextDouble() * 2 * Math.PI;
-        double speed = 0.1;
+        double speed = 0.005;
         Vector startingVelocity = new(Math.Cos(direction) * speed, Math.Sin(direction) * speed);
-        double radius = random.NextDouble() * 0.5 + 0.5;
+        double radius = random.NextDouble() * 0.3 + 0.7;
         Ball newBall = new(startingPosition, startingVelocity) { Radius = radius };
         upperLayerHandler(startingPosition, newBall);
         BallsList.Add(newBall);
@@ -37,10 +38,6 @@ namespace TP.ConcurrentProgramming.Data
       {
         ball.StartMoving();
       }
-    }
-    public override List<IBall> GetBalls()
-    {
-      return BallsList;
     }
 
     #endregion DataAbstractAPI

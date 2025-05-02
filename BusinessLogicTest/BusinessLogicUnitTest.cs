@@ -1,4 +1,5 @@
-﻿using TP.ConcurrentProgramming.Data;
+﻿using System.Collections.ObjectModel;
+using TP.ConcurrentProgramming.Data;
 
 namespace TP.ConcurrentProgramming.BusinessLogic.Test
 {
@@ -57,11 +58,6 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
       public override void Dispose()
       { }
 
-      public override List<Data.IBall> GetBalls()
-      {
-        throw new NotImplementedException();
-      }
-
       public override void Start(int numberOfBalls, Action<IVector, Data.IBall> upperLayerHandler)
       {
         throw new NotImplementedException();
@@ -75,11 +71,6 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
       public override void Dispose()
       {
         Disposed = true;
-      }
-
-      public override List<Data.IBall> GetBalls()
-      {
-        throw new NotImplementedException();
       }
 
       public override void Start(int numberOfBalls, Action<IVector, Data.IBall> upperLayerHandler)
@@ -101,11 +92,6 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
         StartCalled = true;
         NumberOfBallseCreated = numberOfBalls;
         upperLayerHandler(new DataVectorFixture(), new DataBallFixture());
-      }
-
-      public override List<Data.IBall> GetBalls()
-      {
-        throw new NotImplementedException();
       }
 
       private record DataVectorFixture : Data.IVector
@@ -141,16 +127,10 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
 
         public event EventHandler<IVector>? NewPositionNotification = null;
 
-        public object AcquireLock()
+        public void SetVelocity(double x, double y)
         {
           throw new NotImplementedException();
         }
-
-        public void SetPosition(IVector pos)
-        {
-          throw new NotImplementedException();
-        }
-
         public void StartMoving()
         {
           throw new NotImplementedException();

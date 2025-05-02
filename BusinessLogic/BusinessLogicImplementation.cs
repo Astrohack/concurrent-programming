@@ -27,13 +27,20 @@ namespace TP.ConcurrentProgramming.BusinessLogic
       Disposed = true;
     }
 
+    public static List<IBall> BallsList = [];
+
     public override void Start(int numberOfBalls, Action<IPosition, IBall> upperLayerHandler)
     {
       if (Disposed)
         throw new ObjectDisposedException(nameof(BusinessLogicImplementation));
       if (upperLayerHandler == null)
         throw new ArgumentNullException(nameof(upperLayerHandler));
-      layerBellow.Start(numberOfBalls, (startingPosition, databall) => upperLayerHandler(new Position(startingPosition.x, startingPosition.x), new Ball(databall, layerBellow.GetBalls)));
+      layerBellow.Start(numberOfBalls, (startingPosition, databall) =>
+      {
+        var businessBall = new Ball(databall);
+        BallsList.Add(businessBall);
+        upperLayerHandler(new Position(startingPosition.x, startingPosition.y), businessBall);
+      });
     }
 
     #endregion BusinessLogicAbstractAPI

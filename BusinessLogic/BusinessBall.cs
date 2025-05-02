@@ -1,53 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Numerics;
-using Newtonsoft.Json.Linq;
 using TP.ConcurrentProgramming.Data;
 
 namespace TP.ConcurrentProgramming.BusinessLogic
 {
   internal class Ball : IBall
   {
-    public Ball(Data.IBall ball, GetBallsFn getBalls)
+    public Ball(Data.IBall ball)
     {
       ball.NewPositionNotification += RaisePositionChangeEvent;
       this.ball = ball;
-      this.getBalls = getBalls;
     }
-
-    public delegate List<Data.IBall> GetBallsFn();
 
     #region IBall
 
     public event EventHandler<IPosition>? NewPositionNotification;
 
+    internal Data.IBall ball;
+
     #endregion IBall
 
     #region private
-
-    private Data.IBall ball;
 
     public double Radius => ball.Radius;
 
     private static readonly object _ballLock = new object();
 
-    private GetBallsFn getBalls;
-
-    private void RaisePositionChangeEvent(object? sender, Data.IVector e)
+    private void RaisePositionChangeEvent(object? sender, IVector e)
     {
       lock (_ballLock) {
-        var balls = getBalls();
-        foreach (Data.IBall other in balls)
+        foreach (Ball other in BusinessLogicImplementation.BallsList)
         {
-          if (other == ball) continue;
-          lock (other.AcquireLock())
-          lock (ball.AcquireLock()) {
-            CalculateBallCollisions(ball, other);
-          }
+          if (other == this) continue;
+          CalculateBallCollisions(ball, other.ball);
         }
+        CalculateWallCollisions(ball);
       }
-      CalculateWallCollisions(ball);
       NewPositionNotification?.Invoke(this, new Position(e.x, e.y));
     }
 
@@ -75,8 +66,11 @@ namespace TP.ConcurrentProgramming.BusinessLogic
       var impulseVectorA = normal * (-impulse * m2);
       var impulseVectorB = normal * (impulse * m1);
 
-      a.Velocity = velA + impulseVectorA;
-      b.Velocity = velB + impulseVectorB;
+      var aVel = velA + impulseVectorA;
+      var bVel = velB + impulseVectorB;
+
+      a.SetVelocity(aVel.x, aVel.y);
+      b.SetVelocity(bVel.x, bVel.y);
       return;
     }
 
@@ -84,23 +78,23 @@ namespace TP.ConcurrentProgramming.BusinessLogic
     {
       double radius = ball.Radius;
       var board = BusinessLogicAbstractAPI.GetDimensions;
-      Data.IVector pos = ball.Position;
-      Data.IVector vel = ball.Velocity;
+      var pos = ball.Position;
+      var vel = ball.Velocity;
       if (pos.x + radius > board.TableWidth && IVector.Dot(vel, IVector.Right) > 0)
       {
-        ball.Velocity = new Position(-vel.x, vel.y);
+        ball.SetVelocity(-vel.x, vel.y);
       }
       else if (pos.x < radius && IVector.Dot(vel, IVector.Left) > 0)
       {
-        ball.Velocity = new Position(-vel.x, vel.y);
+        ball.SetVelocity(-vel.x, vel.y);
       }
       if (pos.y + radius > board.TableHeight && IVector.Dot(vel, IVector.Up) > 0)
       {
-        ball.Velocity = new Position(vel.x, -vel.y);
+        ball.SetVelocity(vel.x, -vel.y);
       }
       else if (pos.y < radius && IVector.Dot(vel, IVector.Down) > 0)
       {
-        ball.Velocity = new Position(vel.x, -vel.y);
+        ball.SetVelocity(vel.x, -vel.y);
       }
     }
 

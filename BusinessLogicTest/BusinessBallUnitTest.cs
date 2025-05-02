@@ -41,12 +41,10 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
     {
       public event EventHandler<Data.IVector>? NewPositionNotification;
 
-      public Data.IVector Velocity { get; set; }
-      public Data.IVector Position { get; set; }
+      public Data.IVector Velocity { get; private set; }
+      public Data.IVector Position { get; private set; }
       public double Radius { get; init; }
       public double Mass { get; init; }
-
-      private readonly object _lock = new object();
 
       public StubDataBall(double radius, TestVector position, TestVector velocity)
       {
@@ -56,8 +54,6 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
         Velocity = velocity;
       }
 
-      public object AcquireLock() => _lock;
-
       public void RaisePositionChange()
       {
         NewPositionNotification?.Invoke(this, Position);
@@ -66,6 +62,11 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
       public void StartMoving()
       {
         throw new NotImplementedException();
+      }
+
+      public void SetVelocity(double x, double y)
+      {
+        Velocity = new TestVector(x, y);
       }
     }
 
@@ -80,7 +81,7 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
     }
     private BusinessLogic.Ball CreateLogicBall(StubDataBall stub)
     {
-      var logic = new BusinessLogic.Ball(stub, () => dataBalls);
+      var logic = new BusinessLogic.Ball(stub);
       dataBalls.Add(stub);
       logicBalls.Add(logic);
       return logic;
@@ -107,8 +108,9 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
     {
       var stubA = new StubDataBall(1.0, new TestVector(2, 0), new TestVector(1, 0));
       var stubB = new StubDataBall(1.0, new TestVector(4, 0), new TestVector(-1, 0));
-      CreateLogicBall(stubA);
-      CreateLogicBall(stubB);
+
+      BusinessLogicImplementation.BallsList.Add(CreateLogicBall(stubA));
+      BusinessLogicImplementation.BallsList.Add(CreateLogicBall(stubB));
 
       stubA.RaisePositionChange();
 

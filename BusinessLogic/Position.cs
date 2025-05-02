@@ -20,14 +20,5 @@ namespace TP.ConcurrentProgramming.BusinessLogic
       x = posX;
       y = posY;
     }
-
-    public double MagnitudeSquared() => x * x + y * y;
-    public double Magnitude() => Math.Sqrt(MagnitudeSquared());
-
-    public IVector Normalize()
-    {
-      double mag = Magnitude();
-      return mag == 0 ? new Position(0, 0) : new Position(x / mag, y / mag);
-    }
   }
 }

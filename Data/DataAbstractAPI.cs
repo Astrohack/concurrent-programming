@@ -1,4 +1,6 @@
-﻿namespace TP.ConcurrentProgramming.Data
+﻿using System.Collections.ObjectModel;
+
+namespace TP.ConcurrentProgramming.Data
 {
   public abstract class DataAbstractAPI : IDisposable
   {
@@ -14,8 +16,7 @@
     #region public API
 
     public abstract void Start(int numberOfBalls, Action<IVector, IBall> upperLayerHandler);
-    public abstract List<IBall> GetBalls();
-
+    
     #endregion public API
 
     #region IDisposable
@@ -76,13 +77,13 @@
 
     void StartMoving();
 
-    object AcquireLock();
-
     double Radius { get; }
     double Mass { get; }
 
     IVector Position { get; }
 
-    IVector Velocity { get; set; }
+    IVector Velocity { get; }
+
+    void SetVelocity(double x, double y);
   }
 }

@@ -22,11 +22,11 @@
       newInstance.NewPositionNotification += (sender, position) => { Assert.IsNotNull(sender); curentPosition = position; numberOfCallBackCalled++; };
       newInstance.StartMoving();
       await Task.Delay(TimeSpan.FromMilliseconds(100));
-      lock (newInstance.AcquireLock())
-      {
-        Assert.IsTrue(numberOfCallBackCalled > 0);
-        Assert.AreEqual<IVector>(initialPosition, curentPosition);
-      }
+      Assert.IsTrue(numberOfCallBackCalled > 0);
+      Assert.AreEqual<IVector>(initialPosition, curentPosition);
+      newInstance.SetVelocity(1,0);
+      Assert.AreEqual<IVector>(newInstance.Velocity, new Vector(1,0));
+
     }
   }
 }

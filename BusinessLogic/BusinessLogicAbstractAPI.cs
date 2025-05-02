@@ -44,7 +44,7 @@ namespace TP.ConcurrentProgramming.BusinessLogic
   /// </remarks>
   public record Dimensions(double BallDimension, double TableHeight, double TableWidth);
 
-  public interface IPosition: IVector
+  public interface IPosition
   {
     double x { get; init; }
     double y { get; init; }
