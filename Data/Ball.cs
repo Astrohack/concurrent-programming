@@ -65,6 +65,8 @@ namespace TP.ConcurrentProgramming.Data
       }
     }
 
+    public double Id { get; init; }
+
     public double Mass { get; init; }
     #endregion IBall
 
@@ -91,12 +93,13 @@ namespace TP.ConcurrentProgramming.Data
       thread.Start();
     }
 
-    private async void Move()
+    private void Move()
     {
       Stopwatch stopwatch = new();
       stopwatch.Start();
       float startingTime = 0f;
-      float frameDuration = 1f / 100f;
+      float frameDuration = 1f / 60f;
+      var _loggeer = DiagnosticsLogger.GetInstance();
 
       while (_isBallMoverRunning)
       {
@@ -108,8 +111,9 @@ namespace TP.ConcurrentProgramming.Data
           var vel = Velocity;
           Position = new Vector(Position.x + vel.x * delta, Position.y + vel.y * delta);
           RaiseNewPositionChangeNotification();
+          _loggeer.Log(this);
           startingTime = currentTime;
-          await Task.Delay(TimeSpan.FromSeconds(frameDuration));
+          Thread.Sleep(TimeSpan.FromSeconds(frameDuration/10));
         }
       }
     }

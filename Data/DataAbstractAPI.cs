@@ -79,7 +79,7 @@ namespace TP.ConcurrentProgramming.Data
 
     double Radius { get; }
     double Mass { get; }
-
+    double Id { get; }
     IVector Position { get; }
 
     IVector Velocity { get; }

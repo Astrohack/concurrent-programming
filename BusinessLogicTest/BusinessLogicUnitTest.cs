@@ -125,6 +125,8 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
 
         public double Mass => throw new NotImplementedException();
 
+        public double Id => throw new NotImplementedException();
+
         public event EventHandler<IVector>? NewPositionNotification = null;
 
         public void SetVelocity(double x, double y)

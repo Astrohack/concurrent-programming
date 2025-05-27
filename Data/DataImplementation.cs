@@ -30,7 +30,7 @@ namespace TP.ConcurrentProgramming.Data
         double speed = 0.005;
         Vector startingVelocity = new(Math.Cos(direction) * speed, Math.Sin(direction) * speed);
         double radius = random.NextDouble() * 0.3 + 0.7;
-        Ball newBall = new(startingPosition, startingVelocity) { Radius = radius };
+        Ball newBall = new(startingPosition, startingVelocity) { Radius = radius, Id = i };
         upperLayerHandler(startingPosition, newBall);
         BallsList.Add(newBall);
       }

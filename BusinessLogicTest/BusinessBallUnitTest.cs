@@ -46,6 +46,8 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
       public double Radius { get; init; }
       public double Mass { get; init; }
 
+      public double Id => throw new NotImplementedException();
+
       public StubDataBall(double radius, TestVector position, TestVector velocity)
       {
         Radius = radius;
